@@ -1,16 +1,18 @@
 <?php
 /**
- * Description of BsFormHelper
+ * Formヘルパーの代わりに、Bootstrap用のタグを書き出すヘルパー
+ * Bsでフォームを出すときには色々なタグを出力する必要があるが、それを自動化する。
  *
  * @author masa
  */
 App::uses('AppHelper', 'View/Helper');
-class BsFormHelper extends AppHelper {
+class BsFormHelper extends AppHelper 
+{
     var $helpers = array('Html', 'Form');
     var $selected;
 
     /**
-     * Formヘルパーの代わりに、Bootstrap用のタグを書き出す
+     * inputタグ相当。
      *
      * @param type $fieldName
      * @param type $displayName
@@ -18,7 +20,8 @@ class BsFormHelper extends AppHelper {
      * @param type $afterWords
      * @return string
      */
-    public function input($fieldName, $displayName ='', $options = array(), $afterWords = '') {
+    public function input($fieldName, $displayName ='', $options = array(), $afterWords = '') 
+    {
         if (empty($displayName)) {
             $displayName = $fieldName;
         }
@@ -49,7 +52,8 @@ class BsFormHelper extends AppHelper {
         return $this->Html->tag('div', implode("\n", $out), compact('class'));
     }
 
-    public function select($fieldName, $displayName ='', $options = array(), $attributes = array(), $afterWords = '') {
+    public function select($fieldName, $displayName ='', $options = array(), $attributes = array(), $afterWords = '') 
+    {
         if (empty($displayName)) {
             $displayName = $fieldName;
         }
@@ -63,7 +67,18 @@ class BsFormHelper extends AppHelper {
         return $out;
     }
 
-    public function checkbox($fieldName, $displayName ='', $options = array(), $attributes = array(), $afterWords = '') {
+    /**
+     * マルチ選択可能なチェックボックスを生成
+     * 
+     * @param type $fieldName
+     * @param type $displayName
+     * @param type $options
+     * @param type $attributes
+     * @param type $afterWords
+     * @return string
+     */
+    public function checkbox($fieldName, $displayName ='', $options = array(), $attributes = array(), $afterWords = '') 
+    {
         if (empty($displayName)) {
             $displayName = $fieldName;
         }
@@ -91,6 +106,47 @@ class BsFormHelper extends AppHelper {
         return $out;
     }
 
+    
+    /**
+     * １行１つのチェックボックスを生成する
+     * checkboxの方ではチェックボックスに連番が振られてしまうため、それが気持ち悪い時にどうぞ
+     * 
+     * @param type $fieldName
+     * @param type $displayName
+     * @param type $options
+     * @param type $afterWords
+     */
+    public function checkboxSolo($fieldName, $labelName ='', $title = '', $options = array()) 
+    {
+        $out = array();
+
+//        $out[] = $this->Form->label('', $title, array('class' => 'control-label'));
+        $out[] = '<span class="control-label">' . $title . '</span>';
+
+        $text = $this->Form->input($fieldName, am($options, array(
+            'class' => 'input-small', 
+            'type' => 'checkbox',
+            'div' => false,
+            'label' => false,
+            'error' => array(
+                'attributes' => array(
+                    'wrap' => 'span',
+                    'class' => 'help-inline'
+                )
+            )
+            )));
+//        $text .= '<span class="act-form-vertical-align">&nbsp;完了</span>';
+        $text .= $this->Form->label($fieldName, $labelName, $options);
+
+        $out[] = $this->Html->div('controls', $text);
+
+        $class = 'control-group';
+        if ($this->Form->error($fieldName)) { $class .= ' error'; }
+
+        return $this->Html->tag('div', implode("\n", $out), compact('class'));
+    }
+    
+    
     /**
      * フォームタグを用いないスタティックテキストのフィールドを生成する
      *
@@ -102,7 +158,8 @@ class BsFormHelper extends AppHelper {
      * - h => FALSEでhtmlspecialcharsを無効にする。
      * @return string
      */
-    public function value($fieldName, $displayName ='', $options = array(), $afterWords = '') {
+    public function bsvalue($fieldName, $displayName ='', $options = array(), $afterWords = '') 
+    {
         if (empty($displayName)) {
             $displayName = $fieldName;
         }
@@ -137,7 +194,8 @@ class BsFormHelper extends AppHelper {
      * @param type $option
      * @return string
      */
-    public function date($fieldName, $displayName ='', $option = array(), $uniqueId = 'datepicker', $afterWords = '') {
+    public function date($fieldName, $displayName ='', $option = array(), $uniqueId = 'datepicker', $afterWords = '') 
+    {
         if (empty($displayName)) {
             $displayName = $fieldName;
         }
@@ -161,7 +219,10 @@ class BsFormHelper extends AppHelper {
         return $out;
 
     }
-    public function datetime($fieldName, $displayName ='', $option = array(), $uniqueId = 'datetimepicker', $afterWords = '') {
+    
+    
+    public function datetime($fieldName, $displayName ='', $option = array(), $uniqueId = 'datetimepicker', $afterWords = '') 
+    {
         if (empty($displayName)) {
             $displayName = $fieldName;
         }
@@ -177,7 +238,10 @@ class BsFormHelper extends AppHelper {
         return $out;
 
     }
-    public function time($fieldName, $displayName ='', $option = array(), $uniqueId = 'timepicker', $afterWords = '') {
+    
+    
+    public function time($fieldName, $displayName ='', $option = array(), $uniqueId = 'timepicker', $afterWords = '') 
+    {
         if (empty($displayName)) {
             $displayName = $fieldName;
         }
@@ -201,7 +265,8 @@ class BsFormHelper extends AppHelper {
      * @param  array  $appendOptions
      * @return [array] merged options
      */
-    private function _optionMerge($paramOptions = array(), $appendOptions = array()) {
+    private function _optionMerge($paramOptions = array(), $appendOptions = array()) 
+    {
         $srcClass = array();
         $appendClass = array();
 
